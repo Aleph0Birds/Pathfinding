@@ -16,3 +16,6 @@ void Logger::log(const std::string& message) {
     cout << message << nl;
 }
 
+void Logger::err(const std::string& message) {
+    cerr << message << nl;
+}

@@ -12,26 +12,37 @@ Game::Game() {
     window = nullptr;
     renderer = nullptr;
     deltaTimeMs = 16;
+    grid = nullptr;
+    lastUpdateTick = SDL_GetTicks();
+    windowDimensions = {0, 0};
 }
 
 Game::~Game() {
 
 }
 
-void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen) {
+void Game::init(
+        const char* title,
+        const int xpos,
+        const int ypos,
+        const int width,
+        const int height,
+        const bool fullscreen
+    ) {
     isRunning = false;
     if (!SDL_Init(SDL_INIT_EVERYTHING)) // Success is 0
         Logger::log("Successfully initialize SDL");
-    else return Logger::log("Failed to initialize SDL");
-
+    else return Logger::err("Failed to initialize SDL");
 
     window = SDL_CreateWindow(title, xpos, ypos, width, height, fullscreen ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_SHOWN);
     if (window) Logger::log("Successfully create window");
-    else return Logger::log("Failed to create window");
+    else return Logger::err("Failed to create window");
+
+    windowDimensions = {width, height};
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer) Logger::log("Successfully create renderer");
-    else return Logger::log("Failed to create renderer");
+    else return Logger::err("Failed to create renderer");
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     isRunning = true;
@@ -55,13 +66,13 @@ void Game::update(uint32_t deltaTimeMs) {
 }
 
 void Game::render() {
-
     SDL_RenderClear(renderer);
     // Add stuff to render here
-    const static SDL_Rect rect = {0, 0, 0, 0};
-    SDL_FillRect(nullptr, &rect, 0);
-    SDL_RenderFillRect(renderer, &rect);
+    SDL_SetRenderDrawColor(renderer, 0, 60, 100, 255);
 
+    if (grid) grid->draw();
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderPresent(renderer);
 }
 
@@ -73,7 +84,6 @@ void Game::startLoop() {
     }
     clean();
 }
-
 
 void Game::checkUpdate() {
     if (!isRunning) return;
@@ -93,6 +103,18 @@ void Game::clean() const {
     Logger::log("Game cleaned");
 }
 
-void Game::setDeltaTime(uint32_t deltaTimeMs) {
+void Game::setDeltaTime(const uint32_t deltaTimeMs) {
     this->deltaTimeMs = deltaTimeMs;
+}
+
+void Game::setGrid(const uint8_t width, const uint8_t height) {
+    grid = new Grid(this, width, height);
+}
+
+SDL_Renderer* Game::getRenderer() const {
+    return renderer;
+}
+
+std::pair<int, int> Game::getDimensions() const {
+    return windowDimensions;
 }
