@@ -40,6 +40,7 @@ void Grid::draw() const {
             SDL_SetRenderDrawColor(renderer, 120, 120, 120, 255);
             if (tiles[i][j].isWall) {
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                SDL_RenderFillRect(renderer, &tiles[i][j].rectText);
             }
             SDL_RenderDrawRect(renderer, &tiles[i][j].rectText);
         }
