@@ -1,4 +1,6 @@
 #include "Game.hpp"
+
+#include <chrono>
 #include <SDL.h>
 #include <SDL_render.h>
 
@@ -9,6 +11,7 @@ Game::Game() {
     isRunning = false;
     window = nullptr;
     renderer = nullptr;
+    deltaTimeMs = 16;
 }
 
 Game::~Game() {
@@ -32,6 +35,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     isRunning = true;
+    lastUpdateTick = SDL_GetTicks();
 }
 
 void Game::handleEvents() {
@@ -46,17 +50,8 @@ void Game::handleEvents() {
     }
 }
 
-void Game::update() {
+void Game::update(uint32_t deltaTimeMs) {
 
-}
-
-void Game::startLoop() {
-    while (isRunning) {
-        handleEvents();
-        update();
-        render();
-    }
-    clean();
 }
 
 void Game::render() {
@@ -66,9 +61,34 @@ void Game::render() {
     SDL_RenderPresent(renderer);
 }
 
-void Game::clean() {
+void Game::startLoop() {
+    while (isRunning) {
+        handleEvents();
+        checkUpdate();
+        render();
+    }
+    clean();
+}
+
+
+void Game::checkUpdate() {
+    if (!isRunning) return;
+    const uint32_t curTick = SDL_GetTicks();
+    const uint32_t deltaTick = curTick - lastUpdateTick;
+
+    if (deltaTick >= deltaTimeMs) {
+        update(deltaTick);
+        lastUpdateTick = curTick;
+    };
+}
+
+void Game::clean() const {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
     Logger::log("Game cleaned");
+}
+
+void Game::setDeltaTime(uint32_t deltaTimeMs) {
+    this->deltaTimeMs = deltaTimeMs;
 }
