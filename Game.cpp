@@ -58,6 +58,10 @@ void Game::render() {
 
     SDL_RenderClear(renderer);
     // Add stuff to render here
+    const static SDL_Rect rect = {0, 0, 0, 0};
+    SDL_FillRect(nullptr, &rect, 0);
+    SDL_RenderFillRect(renderer, &rect);
+
     SDL_RenderPresent(renderer);
 }
 
