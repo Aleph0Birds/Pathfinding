@@ -43,10 +43,39 @@ protected:
         queue.insert(std::ranges::upper_bound(queue, *node, fn), *node);
     }
 
+# define diagonal 0
     void extractNeighbors(const Node* node) {
         const int x = node->tileX, y = node->tileY;
         const int score = node->score+1;
-        // add X
+
+
+#if diagonal == 1
+        // Add neighbors, including diagonals
+        if (x > 0) {
+            addNode(x - 1, y, score, x, y);
+            if (y > 0) {
+                addNode(x, y - 1, score, x, y);
+                addNode(x - 1, y - 1, score, x, y);
+            }
+            if (y < grid->tilesY - 1) {
+                addNode(x, y + 1, score, x, y);
+                addNode(x - 1, y + 1, score, x, y);
+            }
+        }
+
+        if (x < grid->tilesX - 1) {
+            addNode(x + 1, y, score, x, y);
+            if (y > 0) {
+                addNode(x + 1, y - 1, score, x, y);
+                addNode(x + 1, y, score, x, y);
+            }
+            if (y < grid->tilesY - 1) {
+                addNode(x + 1, y + 1, score, x, y);
+                addNode(x, y + 1, score, x, y);
+            }
+        }
+# else
+        // Add neighbors
         if (x > 0) {
             addNode(x - 1, y, score, x, y);
         }
@@ -59,6 +88,7 @@ protected:
         if (y < grid->tilesY - 1) {
             addNode(x, y + 1, score, x, y);
         }
+# endif
     }
 
     Grid* grid;

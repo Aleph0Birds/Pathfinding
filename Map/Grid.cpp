@@ -35,8 +35,11 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
             }
         }
     }
-    beginY = tilesY - 1;
-    endX = tilesX - 1;
+    // random start and end
+    beginX = rand() % tilesX;
+    beginY = rand() % tilesY;
+    endX = rand() % tilesX;
+    endY = rand() % tilesY;
 
     tiles[beginX][beginY].type = START;
     tiles[endX][endY].type = END;

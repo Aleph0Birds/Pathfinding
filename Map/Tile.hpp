@@ -27,7 +27,7 @@ public:
                 r = 0; g = 255; b = 100;
                 break;
             case END:
-                r = 200; g = 200; b = 10;
+                r = 200; g = 50; b = 150;
                 break;
             case PATH:
                 r = 255; g = 255; b = 0;
