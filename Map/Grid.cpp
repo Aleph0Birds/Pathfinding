@@ -23,14 +23,24 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
         for (int j = 0; j < tilesY; j++) {
             tiles[i][j].type = EMPTY;
             tiles[i][j].rectText = {padding_x + i * tileSize, padding_y + j * tileSize, tileSize, tileSize};
+            tiles[i][j].node = new Node {i, j, -1, -1, -1};
         }
     }
 
+    // set random wall
+    for (int i = 0; i < tilesX; i++) {
+        for (int j = 0; j < tilesY; j++) {
+            if (rand() % 100 < 25) {
+                tiles[i][j].type = WALL;
+            }
+        }
+    }
     beginY = tilesY - 1;
     endX = tilesX - 1;
 
     tiles[beginX][beginY].type = START;
     tiles[endX][endY].type = END;
+
 }
 
 void Grid::checkIndex(const uint8_t x, const uint8_t y) const {

@@ -21,9 +21,10 @@ void Dijkstra::findPath() {
 }
 
 void Dijkstra::colorPath() {
-    Node* node = &queue.back();
+    Node* node = grid->getTile(grid->endX, grid->endY).node;
+    node = grid->getTile(node->parentX, node->parentY).node;
     while (node->parentX != -1 && node->parentY != -1) {
         grid->setTileType(node->tileX, node->tileY, PATH);
-        node = &queue.at(node->parentX);
+        node = grid->getTile(node->parentX, node->parentY).node;
     }
 }

@@ -2,6 +2,7 @@
 #define TILE_HPP
 #include <SDL_rect.h>
 
+#include "../Algo/Node.hpp"
 #include "TileType.hpp"
 
 class Tile {
@@ -14,7 +15,7 @@ public:
                 fill = false;
                 break;
             case EMPTY_SEARCHED:
-                r = 50; g = 200; b = 200;
+                r = 50; g = 150; b = 200;
                 break;
             case EMPTY_EDGE:
                 r = 170; g = 170; b = 170;
@@ -26,7 +27,7 @@ public:
                 r = 0; g = 255; b = 100;
                 break;
             case END:
-                r = 0; g = 100; b = 255;
+                r = 200; g = 200; b = 10;
                 break;
             case PATH:
                 r = 255; g = 255; b = 0;
@@ -42,6 +43,7 @@ public:
     }
     TileType type;
     SDL_Rect rectText;
+    Node* node;
 };
 
 #endif //TILE_HPP

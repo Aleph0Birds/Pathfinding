@@ -29,9 +29,15 @@ protected:
         static auto fn = [](const Node &a, const Node &b) {
             return a.score < b.score;
         };
-        bool shouldAdd = grid->getTile(x, y).type == EMPTY;
+        bool shouldAdd = grid->getTile(x, y).type == EMPTY || grid->getTile(x, y).type == END;
         if (!shouldAdd) return;
-        Node* node = new Node {x, y, parentX, parentY, score};
+        Node* node = grid->getTile(x, y).node;
+        node->tileX = x;
+        node->tileY = y;
+        node->score = score;
+        node->parentX = parentX;
+        node->parentY = parentY;
+        if (grid->getTile(x, y).type == EMPTY)
             grid->setTileType(x, y, EMPTY_EDGE);
 
         queue.insert(std::ranges::upper_bound(queue, *node, fn), *node);
