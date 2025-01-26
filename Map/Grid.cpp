@@ -26,8 +26,11 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
         }
     }
 
-    tiles[0][tilesY - 1].type = START;
-    tiles[tilesX - 1][0].type = END;
+    beginY = tilesY - 1;
+    endX = tilesX - 1;
+
+    tiles[beginX][beginY].type = START;
+    tiles[endX][endY].type = END;
 }
 
 void Grid::checkIndex(const uint8_t x, const uint8_t y) const {

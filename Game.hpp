@@ -9,6 +9,7 @@
 #include <SDL_render.h>
 #include <utility>
 
+#include "Algo/PathfindAlgo.hpp"
 #include "Map/Grid.hpp"
 
 class Game {
@@ -51,7 +52,9 @@ private:
     SDL_Renderer* renderer;
     SDL_Window* window;
     SDL_Texture* renderTarget;
+
     Grid* grid;
+    PathfindAlgo* algo;
 
     std::pair<int, int> windowDimensions;
 

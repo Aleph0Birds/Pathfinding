@@ -21,6 +21,10 @@ add_executable(Pathfinding WIN32 main.cpp
         Map/Grid.cpp
         Map/Grid.hpp
         Map/Tile.hpp
+        Algo/PathfindAlgo.hpp
+        Algo/Node.hpp
+        Algo/Dijkstra.cpp
+        Algo/Dijkstra.hpp
 )
 target_link_libraries(Pathfinding ${SDL2_LIBRARY})
 if(WIN32)

@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <SDL_render.h>
 
+#include "Algo/Dijkstra.hpp"
 #include "Util/Logger.hpp"
 
 
@@ -75,7 +76,10 @@ void Game::handleEvents() {
 }
 
 void Game::update(uint32_t deltaTimeMs) {
-
+    if (grid && algo) {
+        if (!algo->finished)
+            algo->findPath();
+    }
 }
 
 void Game::render() const {
@@ -156,6 +160,7 @@ void Game::setDeltaTime(const uint32_t deltaTimeMs) {
 
 void Game::setGrid(const uint8_t width, const uint8_t height) {
     grid = new Grid(this, width, height);
+    algo = new Dijkstra(grid);
 }
 
 SDL_Renderer* Game::getRenderer() const {

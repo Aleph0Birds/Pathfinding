@@ -7,7 +7,8 @@ enum TileType {
     EMPTY_EDGE,
     WALL,
     START,
-    END
+    END,
+    PATH
 };
 
 #endif //TILETYPE_HPP
