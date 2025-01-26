@@ -1,6 +1,7 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 #include <cstdint>
+#include <SDL_render.h>
 
 #include "Tile.hpp"
 
@@ -16,6 +17,7 @@ public:
 
 private:
     Game* game;
+    SDL_Renderer* renderer;
     Tile** tiles;
     uint8_t tilesX, tilesY;
     uint8_t tileSize;

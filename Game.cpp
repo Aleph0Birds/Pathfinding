@@ -83,13 +83,14 @@ void Game::render() const {
     SDL_RenderClear(renderer);
     // Add stuff to render here
     SDL_SetRenderTarget(renderer, renderTarget);
-    SDL_SetRenderDrawColor(renderer, 0, 60, 100, 255);
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderFillRect(renderer, &worldRect);
     if (grid) grid->draw();
 
     SDL_SetRenderTarget(renderer, nullptr);
-    SDL_SetRenderDrawColor(renderer, 0, 60, 100, 255);
-    SDL_RenderCopy(renderer, renderTarget, nullptr, &worldRectCentered);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderCopy(renderer, renderTarget, nullptr, &worldRectCentered);
     SDL_RenderPresent(renderer);
 }
 
@@ -142,9 +143,9 @@ void Game::handleResize(int width, int height) {
 
 
 void Game::clean() const {
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(renderTarget);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
     SDL_Quit();
     Logger::log("Game cleaned");
 }

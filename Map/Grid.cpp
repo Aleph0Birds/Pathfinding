@@ -9,6 +9,7 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
     this->game = game;
     this->tilesX = tilesX;
     this->tilesY = tilesY;
+    renderer = game->getRenderer();
     constexpr int worldSizeX = Game::worldSizeX;
     constexpr int worldSizeY = Game::worldSizeY;
     const bool wider = worldSizeX > worldSizeY;
@@ -45,7 +46,6 @@ void Grid::setPadding(const uint8_t x, const uint8_t y) {
 }
 
 void Grid::draw() const {
-    static SDL_Renderer* renderer = game->getRenderer();
     for (int i = 0; i < tilesX; i++) {
         for (int j = 0; j < tilesY; j++) {
             if (tiles[i][j].isWall) {
