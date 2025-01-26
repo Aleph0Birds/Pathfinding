@@ -11,10 +11,13 @@ Game::Game() {
     isRunning = false;
     window = nullptr;
     renderer = nullptr;
+    renderTarget = nullptr;
     deltaTimeMs = 16;
     grid = nullptr;
     lastUpdateTick = SDL_GetTicks();
     windowDimensions = {0, 0};
+    scale = 1;
+    worldRectCentered = {};
 }
 
 Game::~Game() {
@@ -29,12 +32,14 @@ void Game::init(
         const int height,
         const bool fullscreen
     ) {
-    isRunning = false;
     if (!SDL_Init(SDL_INIT_EVERYTHING)) // Success is 0
         Logger::log("Successfully initialize SDL");
     else return Logger::err("Failed to initialize SDL");
 
-    window = SDL_CreateWindow(title, xpos, ypos, width, height, fullscreen ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_SHOWN);
+    uint32_t flags = (fullscreen ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_SHOWN)
+        | SDL_WINDOW_RESIZABLE;
+
+    window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
     if (window) Logger::log("Successfully create window");
     else return Logger::err("Failed to create window");
 
@@ -43,7 +48,11 @@ void Game::init(
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer) Logger::log("Successfully create renderer");
     else return Logger::err("Failed to create renderer");
+
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    renderTarget = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, worldSizeX, worldSizeX);
+    worldRectCentered = {0, 0, worldSizeX, worldSizeY};
+    handleResize(width, height);
 
     isRunning = true;
     lastUpdateTick = SDL_GetTicks();
@@ -51,13 +60,17 @@ void Game::init(
 
 void Game::handleEvents() {
     SDL_Event event;
-    SDL_PollEvent(&event);
-    switch (event.type) {
-        case SDL_QUIT:
-            isRunning = false;
-            break;
-        default:
-            break;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                isRunning = false;
+                break;
+            case SDL_WINDOWEVENT:
+                handleWindowEvents(&event);
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -65,13 +78,17 @@ void Game::update(uint32_t deltaTimeMs) {
 
 }
 
-void Game::render() {
+void Game::render() const {
+    if (!isRunning) return;
     SDL_RenderClear(renderer);
     // Add stuff to render here
+    SDL_SetRenderTarget(renderer, renderTarget);
     SDL_SetRenderDrawColor(renderer, 0, 60, 100, 255);
-
     if (grid) grid->draw();
 
+    SDL_SetRenderTarget(renderer, nullptr);
+    SDL_SetRenderDrawColor(renderer, 0, 60, 100, 255);
+    SDL_RenderCopy(renderer, renderTarget, nullptr, &worldRectCentered);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderPresent(renderer);
 }
@@ -96,9 +113,38 @@ void Game::checkUpdate() {
     };
 }
 
+void Game::handleWindowEvents(const SDL_Event* event) {
+    switch (event->window.event) {
+        case SDL_WINDOWEVENT_RESIZED:
+            handleResize(event->window.data1, event->window.data2);
+            break;
+        default: break;
+    }
+}
+
+void Game::handleResize(int width, int height) {
+    windowDimensions = {width, height};
+    scale = std::min(static_cast<float>(width) / worldSizeX, static_cast<float>(height) / worldSizeY);
+    SDL_RenderSetScale(renderer, scale, scale);
+    if (width > height) {
+        worldRectCentered.x = (width - height) / 2 / scale ;
+        worldRectCentered.y = 0;
+        //worldRectCentered = {0, (height - width) / 2, width, width};
+    } else {
+        worldRectCentered.y = (height - width) / 2 / scale;
+        worldRectCentered.x = 0;
+        //worldRectCentered = {(width - height) / 2, 0, height, height};
+    }
+    // SDL_DestroyTexture(renderTarget);
+    // renderTarget = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);
+    //Logger::log("Resize to " + std::to_string(width) + "x" + std::to_string(height));
+}
+
+
 void Game::clean() const {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+    SDL_DestroyTexture(renderTarget);
     SDL_Quit();
     Logger::log("Game cleaned");
 }
@@ -117,4 +163,8 @@ SDL_Renderer* Game::getRenderer() const {
 
 std::pair<int, int> Game::getDimensions() const {
     return windowDimensions;
+}
+
+SDL_Window* Game::getWindow() const {
+    return window;
 }

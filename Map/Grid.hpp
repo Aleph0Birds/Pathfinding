@@ -8,15 +8,16 @@ class Game;
 
 class Grid {
 public:
-    Grid(Game* game, uint8_t width, uint8_t height);
+    Grid(Game* game, uint8_t tilesX, uint8_t tilesY);
     void draw() const;
 
     Tile getTile(uint8_t x, uint8_t y) const;
+    void setPadding(uint8_t x, uint8_t y);
 
 private:
     Game* game;
     Tile** tiles;
-    uint8_t width, height;
+    uint8_t tilesX, tilesY;
     uint8_t tileSize;
     uint8_t padding_x, padding_y;
 };
