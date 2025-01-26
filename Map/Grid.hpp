@@ -10,12 +10,19 @@ class Game;
 class Grid {
 public:
     Grid(Game* game, uint8_t tilesX, uint8_t tilesY);
+
+
     void draw() const;
 
     Tile getTile(uint8_t x, uint8_t y) const;
+
+    void setTileType(uint8_t x, uint8_t y, TileType type) const;
+
     void setPadding(uint8_t x, uint8_t y);
 
 private:
+    void checkIndex(uint8_t x, uint8_t y) const;
+
     Game* game;
     SDL_Renderer* renderer;
     Tile** tiles;

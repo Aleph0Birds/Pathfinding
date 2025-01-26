@@ -21,18 +21,30 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
     for (int i = 0; i < tilesX; i++) {
         tiles[i] = new Tile[tilesY];
         for (int j = 0; j < tilesY; j++) {
-            tiles[i][j].isWall = false;
+            tiles[i][j].type = EMPTY;
             tiles[i][j].rectText = {padding_x + i * tileSize, padding_y + j * tileSize, tileSize, tileSize};
         }
     }
+
+    tiles[0][tilesY - 1].type = START;
+    tiles[tilesX - 1][0].type = END;
 }
 
-Tile Grid::getTile (const uint8_t x, const uint8_t y) const {
+void Grid::checkIndex(const uint8_t x, const uint8_t y) const {
     if (x < 0 || x >= tilesX || y < 0 || y >= tilesY) {
         Logger::err("x or y out of bound");
         throw std::out_of_range("x or y out of bound");
     }
+}
+
+Tile Grid::getTile(const uint8_t x, const uint8_t y) const {
+    checkIndex(x, y);
     return tiles[x][y];
+}
+
+void Grid::setTileType(const uint8_t x, const uint8_t y, const TileType type) const {
+    checkIndex(x, y);
+    tiles[x][y].type = type;
 }
 
 void Grid::setPadding(const uint8_t x, const uint8_t y) {
@@ -48,13 +60,7 @@ void Grid::setPadding(const uint8_t x, const uint8_t y) {
 void Grid::draw() const {
     for (int i = 0; i < tilesX; i++) {
         for (int j = 0; j < tilesY; j++) {
-            if (tiles[i][j].isWall) {
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                SDL_RenderFillRect(renderer, &tiles[i][j].rectText);
-            } else {
-                SDL_SetRenderDrawColor(renderer, 120, 120, 120, 255);
-            }
-            SDL_RenderDrawRect(renderer, &tiles[i][j].rectText);
+            tiles[i][j].draw(renderer);
         }
     }
 }

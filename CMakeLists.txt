@@ -21,7 +21,7 @@ add_executable(Pathfinding WIN32 main.cpp
         Map/Grid.cpp
         Map/Grid.hpp
         Map/Tile.hpp
-        Map/TileType.hpp)
+)
 target_link_libraries(Pathfinding ${SDL2_LIBRARY})
 if(WIN32)
     add_custom_command(
