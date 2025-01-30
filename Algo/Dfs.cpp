@@ -22,7 +22,7 @@ void DFS::findPath() {
 
 }
 
-void DFS::addNode(int x, int y, int curScore, int parentX, int parentY) {
+void DFS::addNode(int x, int y, float curScore, int parentX, int parentY) {
     const TileType type = grid->getTile(x, y).type;
     const bool shouldAdd = type == EMPTY || type == END;
     if (!shouldAdd) return;

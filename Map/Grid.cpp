@@ -17,7 +17,7 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
     padding_x = wider ? (worldSizeX - worldSizeY) >> 1 : 0;
     padding_y = wider ? 0 : (worldSizeY - worldSizeX) >> 1;
 
-    //srand(98123754);
+    //srand(97531);
 
     tiles = new Tile*[tilesX];
     for (int i = 0; i < tilesX; i++) {

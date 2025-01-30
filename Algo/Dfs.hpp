@@ -12,7 +12,7 @@ public:
     explicit DFS (Grid* grid) : PathfindAlgo(grid) {}
     void findPath() override;
 protected:
-    void addNode(int x, int y, int curScore, int parentX, int parentY) override;
+    void addNode(int x, int y, float curScore, int parentX, int parentY) override;
     //void extractNeighbors(const Node *node) override;
 };
 

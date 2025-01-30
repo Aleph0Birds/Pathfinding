@@ -33,7 +33,7 @@ public:
     };
     bool finished = false;
 protected:
-    virtual void addNode(int x, int y, int curScore, int parentX, int parentY) {
+    virtual void addNode(int x, int y, float curScore, int parentX, int parentY) {
         static auto fn = [](const Node &a, const Node &b) {
             return a.score < b.score;
         };
