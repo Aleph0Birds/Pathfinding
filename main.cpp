@@ -4,8 +4,8 @@
 int main() {
     Game game{};
     game.init("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 800, false);
-    game.setGrid(30, 30);
-    game.setDeltaTime(16); // >~60fps
+    game.setGrid(50, 50);
+    game.setDeltaTime(8); // >~60fps
     game.startLoop();
 
     Logger::log("Game closed");

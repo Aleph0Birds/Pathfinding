@@ -25,6 +25,10 @@ add_executable(Pathfinding WIN32 main.cpp
         Algo/Node.hpp
         Algo/Dijkstra.cpp
         Algo/Dijkstra.hpp
+        Algo/Dfs.cpp
+        Algo/Dfs.hpp
+        Algo/AStar.cpp
+        Algo/AStar.hpp
 )
 target_link_libraries(Pathfinding ${SDL2_LIBRARY})
 if(WIN32)

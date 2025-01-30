@@ -17,7 +17,7 @@ public:
             case EMPTY_SEARCHED:
                 r = 50; g = 150; b = 200;
                 break;
-            case EMPTY_EDGE:
+            case EMPTY_TOBECHECK:
                 r = 170; g = 170; b = 170;
                 break;
             case WALL:

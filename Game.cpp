@@ -4,6 +4,8 @@
 #include <SDL.h>
 #include <SDL_render.h>
 
+#include "Algo/AStar.hpp"
+#include "Algo/Dfs.hpp"
 #include "Algo/Dijkstra.hpp"
 #include "Util/Logger.hpp"
 
@@ -160,7 +162,7 @@ void Game::setDeltaTime(const uint32_t deltaTimeMs) {
 
 void Game::setGrid(const uint8_t width, const uint8_t height) {
     grid = new Grid(this, width, height);
-    algo = new Dijkstra(grid);
+    algo = new AStar(grid);
 }
 
 SDL_Renderer* Game::getRenderer() const {

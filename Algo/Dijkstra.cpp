@@ -5,26 +5,19 @@
 #include "Dijkstra.hpp"
 
 void Dijkstra::findPath() {
-    if (queue.empty()) return;
+    if (queue.empty()) {
+        finished = true;
+        return;
+    }
 
-    const Node* node = &queue.front();
+    const Node *node = &queue.front();
+    queue.erase(queue.begin());
     TileType type = grid->getTile(node->tileX, node->tileY).type;
     if (!(type == START || type == END)) {
         grid->setTileType(node->tileX, node->tileY, EMPTY_SEARCHED);
     }
     extractNeighbors(node);
-    if (node->tileX == grid->endX && node->tileY == grid->endY) {
-        finished = true;
+    if (finished)
         colorPath();
-    }
-    queue.erase(queue.begin());
-}
 
-void Dijkstra::colorPath() {
-    Node* node = grid->getTile(grid->endX, grid->endY).node;
-    node = grid->getTile(node->parentX, node->parentY).node;
-    while (node->parentX != -1 && node->parentY != -1) {
-        grid->setTileType(node->tileX, node->tileY, PATH);
-        node = grid->getTile(node->parentX, node->parentY).node;
-    }
 }

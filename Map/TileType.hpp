@@ -4,7 +4,7 @@
 enum TileType {
     EMPTY,
     EMPTY_SEARCHED,
-    EMPTY_EDGE,
+    EMPTY_TOBECHECK,
     WALL,
     START,
     END,

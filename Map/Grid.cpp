@@ -17,13 +17,15 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
     padding_x = wider ? (worldSizeX - worldSizeY) >> 1 : 0;
     padding_y = wider ? 0 : (worldSizeY - worldSizeX) >> 1;
 
+    //srand(98123754);
+
     tiles = new Tile*[tilesX];
     for (int i = 0; i < tilesX; i++) {
         tiles[i] = new Tile[tilesY];
         for (int j = 0; j < tilesY; j++) {
             tiles[i][j].type = EMPTY;
             tiles[i][j].rectText = {padding_x + i * tileSize, padding_y + j * tileSize, tileSize, tileSize};
-            tiles[i][j].node = new Node {i, j, -1, -1, -1};
+            tiles[i][j].node = new Node {i, j, -1, -1, 0};
         }
     }
 
@@ -43,6 +45,10 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
 
     tiles[beginX][beginY].type = START;
     tiles[endX][endY].type = END;
+
+    // tiles[0][16].type = WALL;
+    // tiles[1][18].type = WALL;
+    // tiles[2][19].type = WALL;
 
 }
 

@@ -19,37 +19,48 @@ public:
     }
 
     explicit PathfindAlgo(Grid* grid) : grid(grid) {
-        queue.push_back({grid->beginX, grid->beginY, -1, -1, -1});
+        queue.reserve(grid->tilesX * grid->tilesY);
+        queue.push_back({grid->beginX, grid->beginY, -1, -1, 0});
     }
     virtual void findPath() {};
-    virtual void colorPath() {};
+    void colorPath() {
+        Node* node = grid->getTile(grid->endX, grid->endY).node;
+        node = grid->getTile(node->parentX, node->parentY).node;
+        while (node->parentX != -1 && node->parentY != -1) {
+            grid->setTileType(node->tileX, node->tileY, PATH);
+            node = grid->getTile(node->parentX, node->parentY).node;
+        }
+    };
     bool finished = false;
 protected:
-    void addNode(int x, int y, int score, int parentX, int parentY) {
+    virtual void addNode(int x, int y, int curScore, int parentX, int parentY) {
         static auto fn = [](const Node &a, const Node &b) {
             return a.score < b.score;
         };
-        bool shouldAdd = grid->getTile(x, y).type == EMPTY || grid->getTile(x, y).type == END;
+        TileType type = grid->getTile(x, y).type;
+
+        bool shouldAdd = type == EMPTY || type == END;
         if (!shouldAdd) return;
-        Node* node = grid->getTile(x, y).node;
+        Node *node = grid->getTile(x, y).node;
         node->tileX = x;
         node->tileY = y;
-        node->score = score;
+        node->score = curScore;
         node->parentX = parentX;
         node->parentY = parentY;
-        if (grid->getTile(x, y).type == EMPTY)
-            grid->setTileType(x, y, EMPTY_EDGE);
+        if (type == END) {
+            finished = true;
+            return;
+        }
+        grid->setTileType(x, y, EMPTY_TOBECHECK);
 
         queue.insert(std::ranges::upper_bound(queue, *node, fn), *node);
-    }
+    };
 
 # define diagonal 0
-    void extractNeighbors(const Node* node) {
+    virtual void extractNeighbors(const Node* node) {
         const int x = node->tileX, y = node->tileY;
         const int score = node->score+1;
-
-
-#if diagonal == 1
+#if diagonal
         // Add neighbors, including diagonals
         if (x > 0) {
             addNode(x - 1, y, score, x, y);
