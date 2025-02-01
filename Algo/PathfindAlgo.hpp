@@ -49,9 +49,9 @@ protected:
         node->parentY = parentY;
         if (type == END) {
             finished = true;
-            return;
         }
-        grid->setTileType(x, y, EMPTY_TOBECHECK);
+        else
+            grid->setTileType(x, y, EMPTY_TOBECHECK);
 
         queue.insert(std::ranges::upper_bound(queue, *node, fn), *node);
     };
