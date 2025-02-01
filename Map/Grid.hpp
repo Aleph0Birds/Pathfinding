@@ -9,6 +9,8 @@ class Game;
 
 class Grid {
 public:
+    void initMaze(uint8_t tilesX, uint8_t tilesY);
+
     Grid(Game* game, uint8_t tilesX, uint8_t tilesY);
 
     void draw() const;

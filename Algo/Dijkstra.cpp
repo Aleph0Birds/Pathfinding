@@ -10,7 +10,7 @@ void Dijkstra::findPath() {
         return;
     }
 
-    const Node *node = &queue.front();
+    const Node *node = queue.front();
     queue.erase(queue.begin());
     TileType type = grid->getTile(node->tileX, node->tileY).type;
     if (!(type == START || type == END)) {

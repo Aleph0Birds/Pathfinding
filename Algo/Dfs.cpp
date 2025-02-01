@@ -10,7 +10,7 @@ void DFS::findPath() {
         return;
     }
 
-    Node* node = &queue.back();
+    Node* node = queue.back();
     queue.erase(queue.end());
     TileType type = grid->getTile(node->tileX, node->tileY).type;
     if (!(type == START || type == END)) {
@@ -29,7 +29,7 @@ void DFS::addNode(int x, int y, float curScore, int parentX, int parentY) {
     Node *node = grid->getTile(x, y).node;
     node->tileX = x;
     node->tileY = y;
-    node->score = curScore;
+    node->fCost = curScore;
     node->parentX = parentX;
     node->parentY = parentY;
     if (type == END) {
@@ -38,7 +38,7 @@ void DFS::addNode(int x, int y, float curScore, int parentX, int parentY) {
     }
     grid->setTileType(x, y, EMPTY_TOBECHECK);
 
-    queue.push_back(*node);
+    queue.push_back(node);
 }
 
 

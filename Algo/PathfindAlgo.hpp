@@ -19,8 +19,8 @@ public:
     }
 
     explicit PathfindAlgo(Grid* grid) : grid(grid) {
-        queue.reserve(grid->tilesX * grid->tilesY);
-        queue.push_back({grid->beginX, grid->beginY, -1, -1, 0});
+        //queue.reserve(grid->tilesX * grid->tilesY);
+        queue.push_back(grid->getTile(grid->beginX, grid->beginY).node);
     }
     virtual void findPath() {};
     void colorPath() {
@@ -34,8 +34,8 @@ public:
     bool finished = false;
 protected:
     virtual void addNode(int x, int y, float curScore, int parentX, int parentY) {
-        static auto fn = [](const Node &a, const Node &b) {
-            return a.score < b.score;
+        static auto fn = [](const Node* a, const Node* b) {
+            return a->fCost < b->fCost;
         };
         TileType type = grid->getTile(x, y).type;
 
@@ -44,7 +44,7 @@ protected:
         Node *node = grid->getTile(x, y).node;
         node->tileX = x;
         node->tileY = y;
-        node->score = curScore;
+        node->fCost = curScore;
         node->parentX = parentX;
         node->parentY = parentY;
         if (type == END) {
@@ -53,13 +53,13 @@ protected:
         else
             grid->setTileType(x, y, EMPTY_TOBECHECK);
 
-        queue.insert(std::ranges::upper_bound(queue, *node, fn), *node);
+        queue.insert(std::ranges::upper_bound(queue, node, fn), node);
     };
 
 # define diagonal 0
     virtual void extractNeighbors(const Node* node) {
         const int x = node->tileX, y = node->tileY;
-        const int score = node->score+1;
+        const int score = node->fCost+1;
 #if diagonal
         // Add neighbors, including diagonals
         if (x > 0) {
@@ -103,7 +103,7 @@ protected:
     }
 
     Grid* grid;
-    std::pmr::vector<Node> queue;
+    std::pmr::vector<Node*> queue;
 };
 
 #endif //PATHFINDALGO_HPP

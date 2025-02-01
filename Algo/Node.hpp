@@ -8,7 +8,7 @@
 struct Node {
     int tileX = -1, tileY = -1;
     int parentX = -1, parentY = -1;
-    float score = 0, cost = 0;
+    float fCost = 0, gCost = 0, hCost = 0;
 };
 
 #endif //NODE_HPP

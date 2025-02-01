@@ -11,14 +11,14 @@ class AStar : public PathfindAlgo {
 public:
     explicit AStar(Grid* grid) : PathfindAlgo(grid) {
         //int score = 0;
-        queue.at(0).score = 0;
+        queue.at(0)->fCost = 0;
     }
     void findPath() override;
 protected:
     void addNode(int x, int y, float curScore, int parentX, int parentY) override;
     void extractNeighbors(const Node *node) override;
 private:
-    float calculateScore(int x, int y, float parentCost) const;
+    float calculateHCost(int x, int y, float gCost) const;
 };
 
 

@@ -5,20 +5,7 @@
 #include "../Game.hpp"
 #include "../Util/Logger.hpp"
 
-Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
-    this->game = game;
-    this->tilesX = tilesX;
-    this->tilesY = tilesY;
-    renderer = game->getRenderer();
-    constexpr int worldSizeX = Game::worldSizeX;
-    constexpr int worldSizeY = Game::worldSizeY;
-    const bool wider = worldSizeX > worldSizeY;
-    tileSize = wider ? worldSizeY / tilesX : worldSizeX / tilesY; // fit mode
-    padding_x = wider ? (worldSizeX - worldSizeY) >> 1 : 0;
-    padding_y = wider ? 0 : (worldSizeY - worldSizeX) >> 1;
-
-    //srand(97531);
-
+void Grid::initMaze(const uint8_t tilesX, const uint8_t tilesY) {
     tiles = new Tile*[tilesX];
     for (int i = 0; i < tilesX; i++) {
         tiles[i] = new Tile[tilesY];
@@ -28,6 +15,23 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
             tiles[i][j].node = new Node {i, j, -1, -1, 0};
         }
     }
+}
+
+Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
+    this->game = game;
+    this->tilesX = tilesX;
+    this->tilesY = tilesY;
+    renderer = game->getRenderer();
+    constexpr int worldSizeX = Game::worldSizeX;
+    constexpr int worldSizeY = Game::worldSizeY;
+    constexpr bool wider = worldSizeX > worldSizeY;
+    tileSize = wider ? worldSizeY / tilesX : worldSizeX / tilesY; // fit mode
+    padding_x = wider ? (worldSizeX - worldSizeY) >> 1 : 0;
+    padding_y = wider ? 0 : (worldSizeY - worldSizeX) >> 1;
+
+    //srand(97531);
+
+    initMaze(tilesX, tilesY);
 
     // set random wall
     for (int i = 0; i < tilesX; i++) {
@@ -37,11 +41,11 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
             }
         }
     }
-    // random start and end
-    beginX = rand() % tilesX;
-    beginY = rand() % tilesY;
-    endX = rand() % tilesX;
-    endY = rand() % tilesY;
+    // not random start and end
+    beginX = 0;// rand() % tilesX;
+    beginY = tilesY-1;//rand() % tilesY;
+    endX = tilesX-1;//rand() % tilesX;
+    endY = 0;//rand() % tilesY;
 
     tiles[beginX][beginY].type = START;
     tiles[endX][endY].type = END;
