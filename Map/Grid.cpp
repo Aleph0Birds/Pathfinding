@@ -5,17 +5,64 @@
 #include "../Game.hpp"
 #include "../Util/Logger.hpp"
 
-void Grid::initMaze(const uint8_t tilesX, const uint8_t tilesY) {
+void Grid::initMaze(const TileType initType) {
     tiles = new Tile*[tilesX];
     for (int i = 0; i < tilesX; i++) {
         tiles[i] = new Tile[tilesY];
         for (int j = 0; j < tilesY; j++) {
-            tiles[i][j].type = EMPTY;
+            tiles[i][j].type = initType;
             tiles[i][j].rectText = {padding_x + i * tileSize, padding_y + j * tileSize, tileSize, tileSize};
             tiles[i][j].node = new Node {i, j, -1, -1, 0};
         }
     }
 }
+
+void Grid::generateMaze(const int startX, const int startY) const {
+    // generate maze using prim's algorithm
+
+    // startss from a random cell
+    tiles[startX][startY].type = EMPTY;
+    std::vector<std::pair<int, int>> walls;
+    walls.push_back({startX, startY});
+    while (!walls.empty()) {
+        int index = rand() % walls.size();
+        int x = walls[index].first;
+        int y = walls[index].second;
+        walls.erase(walls.begin() + index);
+        if (x > 1 && tiles[x - 2][y].type == WALL) {
+            tiles[x - 2][y].type = EMPTY;
+            tiles[x - 1][y].type = EMPTY;
+            walls.push_back({x - 2, y});
+        }
+        if (x < tilesX - 2 && tiles[x + 2][y].type == WALL) {
+            tiles[x + 2][y].type = EMPTY;
+            tiles[x + 1][y].type = EMPTY;
+            walls.push_back({x + 2, y});
+        }
+        if (y > 1 && tiles[x][y - 2].type == WALL) {
+            tiles[x][y - 2].type = EMPTY;
+            tiles[x][y - 1].type = EMPTY;
+            walls.push_back({x, y - 2});
+        }
+        if (y < tilesY - 2 && tiles[x][y + 2].type == WALL) {
+            tiles[x][y + 2].type = EMPTY;
+            tiles[x][y + 1].type = EMPTY;
+            walls.push_back({x, y + 2});
+        }
+    }
+}
+
+void Grid::randomMaze() const {
+    // set random wall
+    for (int i = 0; i < tilesX; i++) {
+        for (int j = 0; j < tilesY; j++) {
+            if (rand() % 100 < 25) {
+                tiles[i][j].type = WALL;
+            }
+        }
+    }
+}
+
 
 Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
     this->game = game;
@@ -31,28 +78,16 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
 
     //srand(97531);
 
-    initMaze(tilesX, tilesY);
-
-    // set random wall
-    for (int i = 0; i < tilesX; i++) {
-        for (int j = 0; j < tilesY; j++) {
-            if (rand() % 100 < 25) {
-                tiles[i][j].type = WALL;
-            }
-        }
-    }
+    initMaze(WALL);
     // not random start and end
-    beginX = 0;// rand() % tilesX;
-    beginY = tilesY-1;//rand() % tilesY;
-    endX = tilesX-1;//rand() % tilesX;
-    endY = 0;//rand() % tilesY;
-
+    beginX =  rand() % tilesX;
+    beginY =  rand() % tilesY;
+    endX = tilesX-2;//rand() % tilesX;
+    endY = 1;//rand() % tilesY;
+    generateMaze(beginX, beginY);
+    //randomMaze();
     tiles[beginX][beginY].type = START;
     tiles[endX][endY].type = END;
-
-    // tiles[0][16].type = WALL;
-    // tiles[1][18].type = WALL;
-    // tiles[2][19].type = WALL;
 
 }
 

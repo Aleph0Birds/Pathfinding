@@ -7,11 +7,11 @@
 #include "PathfindAlgo.hpp"
 
 
-class AStar : public PathfindAlgo {
+class AStar final : public PathfindAlgo {
 public:
     explicit AStar(Grid* grid) : PathfindAlgo(grid) {
         //int score = 0;
-        queue.at(0)->fCost = 0;
+        //queue.at(0)->fCost = 0;
     }
     void findPath() override;
 protected:
