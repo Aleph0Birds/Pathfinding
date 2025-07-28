@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(Pathfinding CXX)
 
-
 set(SDL2_PATH "C:/SDL/x86_64-w64-mingw32")
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake-modules)
 set(CMAKE_CXX_STANDARD 20)
@@ -31,6 +30,7 @@ add_executable(Pathfinding WIN32 main.cpp
         Algo/AStar.hpp
 )
 target_link_libraries(Pathfinding ${SDL2_LIBRARY})
+set_target_properties(Pathfinding PROPERTIES WIN32_EXECUTABLE FALSE)
 if(WIN32)
     add_custom_command(
             TARGET Pathfinding POST_BUILD
