@@ -47,12 +47,12 @@ float AStar::calculateHCost(const int x, const int y, const float gCost) const {
     // Euclidean Distance
     //const float hCostEuclidean = std::sqrt(std::pow(x - grid->endX, 2) + std::pow(y - grid->endY, 2));
     // Chebyshev Distance
-    const int hCostChebyshev = std::max(std::abs(x - grid->endX), std::abs(y - grid->endY));
+    //const int hCostChebyshev = std::max(std::abs(x - grid->endX), std::abs(y - grid->endY));
     // Weighted Heuristic: Blend Manhattan and Chebyshev distances
     //const float weightManhattan = 1.0f;
     //const float weightChebyshev = 0.5f; // Give diagonal movement a slight preference
 
-    return  hCostLinear +  hCostChebyshev;
+    return hCostLinear;
 }
 
 static auto fn = [](const Node* a, const Node* b) {
@@ -66,13 +66,17 @@ void AStar::addNode(int x, int y, float curScore, int parentX, int parentY) {
     const bool ignore = type == START || type == WALL || type == EMPTY_SEARCHED;
     if (ignore) return;
     //const int costScore = grid->getTile(parentX, parentY).node->score;
-    if (auto index = std::ranges::find(queue, grid->getTile(x, y).node); index != queue.end()) {
-        // exists in list
-        if (gCost < (*index)->gCost) {
-            (*index)->gCost = gCost;
-            (*index)->fCost = gCost + (*index)->hCost;
-            (*index)->parentX = parentX;
-            (*index)->parentY = parentY;
+    auto index = std::ranges::find(queue, grid->getTile(x, y).node);
+    // exists in list
+    if (index != queue.end()) {
+        if (Node* node = *index; gCost < node->gCost) {
+            queue.erase(index);
+            node->gCost = gCost;
+            node->fCost = gCost + node->hCost;
+            node->parentX = parentX;
+            node->parentY = parentY;
+
+            queue.insert(std::ranges::lower_bound(queue, node, fn), node);
         }
         return;
     }
