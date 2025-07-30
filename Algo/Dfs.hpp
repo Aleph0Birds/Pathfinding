@@ -10,7 +10,7 @@
 class DFS : public PathfindAlgo {
 public:
     explicit DFS (Grid* grid) : PathfindAlgo(grid) {}
-    void findPath() override;
+    void tickFindPath() override;
 protected:
     void addNode(int x, int y, float curScore, int parentX, int parentY) override;
     //void extractNeighbors(const Node *node) override;

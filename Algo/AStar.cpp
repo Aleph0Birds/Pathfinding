@@ -7,7 +7,7 @@
 #include <complex>
 #include <deque>
 
-void AStar::findPath() {
+void AStar::tickFindPath() {
     if (queue.empty()) {
         finished = true;
         return;
@@ -59,9 +59,9 @@ static auto fn = [](const Node* a, const Node* b) {
     return a->fCost < b->fCost;
 };
 
-void AStar::addNode(int x, int y, float curScore, int parentX, int parentY) {
-    TileType type = grid->getTile(x, y).type;
-    const float gCost = curScore+1;
+void AStar::addNode(int x, int y, float parentScore, int parentX, int parentY) {
+    const TileType type = grid->getTile(x, y).type;
+    const float gCost = parentScore+1;
 
     const bool ignore = type == START || type == WALL || type == EMPTY_SEARCHED;
     if (ignore) return;

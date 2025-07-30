@@ -22,7 +22,7 @@ public:
         //queue.reserve(grid->tilesX * grid->tilesY);
         queue.push_back(grid->getTile(grid->beginX, grid->beginY).node);
     }
-    virtual void findPath() {};
+    virtual void tickFindPath() {};
     void colorPath() {
         Node* node = grid->getTile(grid->endX, grid->endY).node;
         node = grid->getTile(node->parentX, node->parentY).node;

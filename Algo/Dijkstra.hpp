@@ -12,7 +12,7 @@
 class Dijkstra : public PathfindAlgo {
 public:
     explicit Dijkstra(Grid* grid) : PathfindAlgo(grid) {}
-    void findPath() override;
+    void tickFindPath() override;
 };
 
 #endif //DIJKSTRA_HPP

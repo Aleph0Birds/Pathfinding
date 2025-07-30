@@ -13,9 +13,9 @@ public:
         //int score = 0;
         //queue.at(0)->fCost = 0;
     }
-    void findPath() override;
+    void tickFindPath() override;
 protected:
-    void addNode(int x, int y, float curScore, int parentX, int parentY) override;
+    void addNode(int x, int y, float parentScore, int parentX, int parentY) override;
     void extractNeighbors(const Node *node) override;
 private:
     float calculateHCost(int x, int y, float gCost) const;

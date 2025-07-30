@@ -4,7 +4,7 @@
 
 #include "Dijkstra.hpp"
 
-void Dijkstra::findPath() {
+void Dijkstra::tickFindPath() {
     if (queue.empty()) {
         finished = true;
         return;

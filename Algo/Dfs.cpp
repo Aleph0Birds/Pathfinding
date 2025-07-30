@@ -4,7 +4,7 @@
 
 #include "Dfs.hpp"
 
-void DFS::findPath() {
+void DFS::tickFindPath() {
     if (queue.empty()) {
         finished = true;
         return;
