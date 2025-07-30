@@ -28,6 +28,9 @@ add_executable(Pathfinding WIN32 main.cpp
         Algo/Dfs.hpp
         Algo/AStar.cpp
         Algo/AStar.hpp
+        Input/InputHandler.cpp
+        Input/InputHandler.hpp
+        Input/KeyMap.hpp
 )
 target_link_libraries(Pathfinding ${SDL2_LIBRARY})
 set_target_properties(Pathfinding PROPERTIES WIN32_EXECUTABLE FALSE)

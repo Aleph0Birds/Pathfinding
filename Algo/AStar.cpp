@@ -9,7 +9,7 @@
 
 void AStar::tickFindPath() {
     if (queue.empty()) {
-        finished = true;
+        end(false);
         return;
     }
     const Node* node = queue.front();
@@ -19,8 +19,6 @@ void AStar::tickFindPath() {
         grid->setTileType(node->tileX, node->tileY, EMPTY_SEARCHED);
     }
     extractNeighbors(node);
-    if (finished)
-        colorPath();
 }
 
 void AStar::extractNeighbors(const Node *node) {
@@ -63,8 +61,9 @@ void AStar::addNode(int x, int y, float parentScore, int parentX, int parentY) {
     const TileType type = grid->getTile(x, y).type;
     const float gCost = parentScore+1;
 
-    const bool ignore = type == START || type == WALL || type == EMPTY_SEARCHED;
-    if (ignore) return;
+    const bool shouldAdd = type == EMPTY || type == END ||
+        type == EMPTY_TOBECHECK || type == EMPTY_SEARCHED;
+    if (!shouldAdd) return;
     //const int costScore = grid->getTile(parentX, parentY).node->score;
     auto index = std::ranges::find(queue, grid->getTile(x, y).node);
     // exists in list
@@ -81,6 +80,9 @@ void AStar::addNode(int x, int y, float parentScore, int parentX, int parentY) {
         return;
     }
 
+    if (type == EMPTY_SEARCHED)
+        return;
+
     Node *node = grid->getTile(x, y).node;
     node->tileX = x;
     node->tileY = y;
@@ -90,11 +92,12 @@ void AStar::addNode(int x, int y, float parentScore, int parentX, int parentY) {
     node->parentX = parentX;
     node->parentY = parentY;
     if (type == END) {
-        finished = true;
+        end(true);
         return;
     }
     grid->setTileType(x, y, EMPTY_TOBECHECK);
     queue.insert(std::ranges::lower_bound(queue, node, fn), node);
+    this->totalSearches++;
 }
 
 

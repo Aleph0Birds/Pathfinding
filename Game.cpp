@@ -12,6 +12,7 @@
 
 Game::Game() {
     isRunning = false;
+    paused = false;
     window = nullptr;
     renderer = nullptr;
     renderTarget = nullptr;
@@ -57,6 +58,8 @@ void Game::init(
     worldRectCentered = {0, 0, worldSizeX, worldSizeY};
     handleResize(width, height);
 
+    inputHandler = new InputHandler(this);
+
     isRunning = true;
     lastUpdateTick = SDL_GetTicks();
 }
@@ -64,9 +67,11 @@ void Game::init(
 void Game::handleEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
+
         switch (event.type) {
             case SDL_QUIT:
                 isRunning = false;
+                Logger::log("Quit event received");
                 break;
             case SDL_WINDOWEVENT:
                 handleWindowEvents(&event);
@@ -77,10 +82,14 @@ void Game::handleEvents() {
     }
 }
 
+void Game::preUpdate() {
+    inputHandler->updateInput();
+}
+
 void Game::update(uint32_t deltaTimeMs) {
     if (grid && algo) {
         if (!algo->finished)
-            algo->findPath();
+            algo->tickFindPath();
     }
 }
 
@@ -115,8 +124,12 @@ void Game::checkUpdate() {
     const uint32_t deltaTick = curTick - lastUpdateTick;
 
     if (deltaTick >= deltaTimeMs) {
-        update(deltaTick);
+        preUpdate();
+
         lastUpdateTick = curTick;
+        if (paused) return;
+
+        update(deltaTick);
     };
 }
 
