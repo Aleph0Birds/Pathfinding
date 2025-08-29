@@ -38,6 +38,7 @@ public:
         queue.clear();
         queue.push_back(grid->getTile(grid->beginX, grid->beginY).node);
         this->finished = false;
+        this->totalSearches = 0;
     }
     bool finished = false;
 protected:
