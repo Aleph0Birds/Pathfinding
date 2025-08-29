@@ -16,3 +16,10 @@ void Logger::log(const std::string& message) {
     cout << message << nl;
 }
 
+void Logger::err(const std::string& message) {
+    cerr << message << nl;
+}
+
+void Logger::SDL_log(const std::string &message, const char *fmt...) {
+    SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, message.c_str(), fmt);
+}
