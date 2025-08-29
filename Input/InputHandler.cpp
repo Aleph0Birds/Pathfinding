@@ -11,9 +11,8 @@ InputHandler::InputHandler(Game* game) {
 
 void InputHandler::updateInput() {
     curKeyboardState = SDL_GetKeyboardState(nullptr);
-    if (curKeyboardState[KeyMap::PAUSE] && !prevKeyboardState[KeyMap::PAUSE]) {
-        if (game->isPaused()) game->resume();
-        else game->pause();
-    }
+
+    KeyMap::triggerKey(curKeyboardState, prevKeyboardState);
+
     std::copy(curKeyboardState, curKeyboardState + SDL_NUM_SCANCODES, prevKeyboardState);
 }

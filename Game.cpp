@@ -7,6 +7,7 @@
 #include "Algo/AStar.hpp"
 #include "Algo/Dfs.hpp"
 #include "Algo/Dijkstra.hpp"
+#include "Input/KeyMap.hpp"
 #include "Util/Logger.hpp"
 
 
@@ -59,6 +60,7 @@ void Game::init(
     handleResize(width, height);
 
     inputHandler = new InputHandler(this);
+    initDefaultKeyMap();
 
     isRunning = true;
     lastUpdateTick = SDL_GetTicks();
@@ -168,6 +170,33 @@ void Game::clean() const {
     SDL_Quit();
     Logger::log("Game cleaned");
 }
+
+void Game::initDefaultKeyMap() {
+    KeyMap::initKeyMap();
+    KeyMap::bindKeyFn(KeyMap::PAUSE, KEY_PRESSED, [this] {
+        if (paused) {
+            resume();
+            Logger::log("Game resumed");
+        } else {
+            pause();
+            Logger::log("Game paused");
+        }
+    });
+
+    KeyMap::bindKeyFn(SDL_SCANCODE_ESCAPE, KEY_PRESSED, [this] {
+        isRunning = false;
+        Logger::log("Game exit requested");
+    });
+
+    KeyMap::bindKeyFn(KeyMap::RESTART, KEY_PRESSED, [this] {
+        grid->genMazeRandom();
+        algo->reset();
+        pause();
+        render();
+        Logger::log("Game restarted");
+    });
+}
+
 
 void Game::setDeltaTime(const uint32_t deltaTimeMs) {
     this->deltaTimeMs = deltaTimeMs;

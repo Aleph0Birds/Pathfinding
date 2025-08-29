@@ -32,6 +32,7 @@ public:
     void handleResize(int width, int height);
     void pause() { paused = true; }
     void resume() { paused = false; }
+    void initDefaultKeyMap();
 
     std::pair<int, int> getDimensions() const;
     SDL_Renderer* getRenderer() const;

@@ -31,6 +31,8 @@ add_executable(Pathfinding WIN32 main.cpp
         Input/InputHandler.cpp
         Input/InputHandler.hpp
         Input/KeyMap.hpp
+        Input/KeyAction.hpp
+        Input/KeyMap.cpp
 )
 target_link_libraries(Pathfinding ${SDL2_LIBRARY})
 set_target_properties(Pathfinding PROPERTIES WIN32_EXECUTABLE FALSE)
