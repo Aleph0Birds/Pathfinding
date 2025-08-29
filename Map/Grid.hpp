@@ -12,7 +12,9 @@ public:
     void initMaze(TileType initType);
 
     void generateMaze(int startX, int startY) const;
-    void randomMaze() const;
+    void randomWall() const;
+
+    void genMazeRandom();
 
     Grid(Game* game, uint8_t tilesX, uint8_t tilesY);
 

@@ -5,10 +5,12 @@
 #ifndef PATHFINDALGO_HPP
 #define PATHFINDALGO_HPP
 #include <algorithm>
+#include <string>
 #include <vector>
 
 #include "Node.hpp"
 #include "../Map/Grid.hpp"
+#include "../Util/Logger.hpp"
 
 class Grid;
 
@@ -32,6 +34,11 @@ public:
             node = grid->getTile(node->parentX, node->parentY).node;
         }
     };
+    void reset() {
+        queue.clear();
+        queue.push_back(grid->getTile(grid->beginX, grid->beginY).node);
+        this->finished = false;
+    }
     bool finished = false;
 protected:
     virtual void addNode(int x, int y, float curScore, int parentX, int parentY) {
@@ -71,17 +78,6 @@ protected:
             }
         }
 
-        if (x < grid->tilesX - 1) {
-            addNode(x + 1, y, score, x, y);
-            if (y > 0) {
-                addNode(x + 1, y - 1, score, x, y);
-                addNode(x + 1, y, score, x, y);
-            }
-            if (y < grid->tilesY - 1) {
-                addNode(x + 1, y + 1, score, x, y);
-                addNode(x, y + 1, score, x, y);
-            }
-        }
 # else
         // Add neighbors
         if (x > 0) {

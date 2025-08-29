@@ -1,5 +1,6 @@
 #include "Grid.hpp"
 
+#include <ctime>
 #include <stdexcept>
 
 #include "../Game.hpp"
@@ -52,7 +53,7 @@ void Grid::generateMaze(const int startX, const int startY) const {
     }
 }
 
-void Grid::randomMaze() const {
+void Grid::randomWall() const {
     // set random wall
     for (int i = 0; i < tilesX; i++) {
         for (int j = 0; j < tilesY; j++) {
@@ -63,6 +64,24 @@ void Grid::randomMaze() const {
     }
 }
 
+
+void Grid::genMazeRandom() {
+
+    const unsigned int seed = time(NULL);
+    srand(seed);
+    Logger::log("Random seed: " + std::to_string(seed));
+
+    initMaze(EMPTY);
+    // not random start and end
+    beginX = rand() % this->tilesX;
+    beginY = rand() % this->tilesY;
+    endX = tilesX-2;//rand() % tilesX;
+    endY = 1;//rand() % tilesY;
+    //generateMaze(beginX, beginY);
+    randomWall();
+    tiles[beginX][beginY].type = START;
+    tiles[endX][endY].type = END;
+}
 
 Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
     this->game = game;
@@ -76,19 +95,7 @@ Grid::Grid(Game* game, const uint8_t tilesX, const uint8_t tilesY) {
     padding_x = wider ? (worldSizeX - worldSizeY) >> 1 : 0;
     padding_y = wider ? 0 : (worldSizeY - worldSizeX) >> 1;
 
-    //srand(97531);
-
-    initMaze(WALL);
-    // not random start and end
-    beginX =  rand() % tilesX;
-    beginY =  rand() % tilesY;
-    endX = tilesX-2;//rand() % tilesX;
-    endY = 1;//rand() % tilesY;
-    generateMaze(beginX, beginY);
-    //randomMaze();
-    tiles[beginX][beginY].type = START;
-    tiles[endX][endY].type = END;
-
+    genMazeRandom();
 }
 
 void Grid::checkIndex(const uint8_t x, const uint8_t y) const {

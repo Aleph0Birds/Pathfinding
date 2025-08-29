@@ -21,24 +21,6 @@ void AStar::tickFindPath() {
     extractNeighbors(node);
 }
 
-void AStar::extractNeighbors(const Node *node) {
-    const int x = node->tileX, y = node->tileY;
-    const float parentCost = node->gCost;
-    // Add neighbors
-    if (x > 0) {
-        addNode(x - 1, y, parentCost, x, y);
-    }
-    if (y > 0) {
-        addNode(x, y - 1, parentCost, x, y);
-    }
-    if (x < grid->tilesX - 1) {
-        addNode(x + 1, y, parentCost, x, y);
-    }
-    if (y < grid->tilesY - 1) {
-        addNode(x, y + 1, parentCost, x, y);
-    }
-}
-
 float AStar::calculateHCost(const int x, const int y, const float gCost) const {
     // Manhattan Distance
     const int hCostLinear = std::abs(x - grid->endX) + std::abs(y - grid->endY);

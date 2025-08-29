@@ -16,7 +16,6 @@ public:
     void tickFindPath() override;
 protected:
     void addNode(int x, int y, float parentScore, int parentX, int parentY) override;
-    void extractNeighbors(const Node *node) override;
 private:
     float calculateHCost(int x, int y, float gCost) const;
 };

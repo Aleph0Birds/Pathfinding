@@ -112,11 +112,11 @@ void Game::render() const {
 }
 
 void Game::startLoop() {
-    while (isRunning) {
+    do {
         handleEvents();
         checkUpdate();
-        render();
-    }
+        checkRender();
+    } while (isRunning);
     clean();
 }
 
@@ -161,7 +161,6 @@ void Game::handleResize(int width, int height) {
     // renderTarget = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);
     //Logger::log("Resize to " + std::to_string(width) + "x" + std::to_string(height));
 }
-
 
 void Game::clean() const {
     SDL_DestroyTexture(renderTarget);
