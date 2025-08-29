@@ -69,7 +69,7 @@ void Game::init(
     lastUpdateTickMs = SDL_GetTicks();
     lastRenderTickMs = SDL_GetTicks();
     fpsCalculated = 0;
-    cumulativeRenderTickMs = SDL_GetTicks();
+    cumulativeRenderTickMs = 0;
 }
 
 void Game::handleEvents() {
@@ -103,6 +103,7 @@ void Game::update(uint32_t deltaTimeMs) {
 void Game::setTargetFps(unsigned short targetFps) {
     this->targetFps = targetFps;
     this->targetMsElapsed = 1000 / targetFps;
+    this->cumulativeRenderTickMs += this->targetMsElapsed;
 }
 
 void Game::render() {
@@ -126,10 +127,10 @@ void Game::checkRender() {
     const uint32_t passedMs = currentTickMs - lastRenderTickMs;
     cumulativeRenderTickMs += passedMs;
     lastRenderTickMs = currentTickMs;
-    if (cumulativeRenderTickMs > targetMsElapsed) {
+    if (cumulativeRenderTickMs >= targetMsElapsed) {
         cumulativeRenderTickMs -= targetMsElapsed;
     } else return;
-    if (!isRunning || paused) return;
+    if (!isRunning) return;
     render();
 }
 
