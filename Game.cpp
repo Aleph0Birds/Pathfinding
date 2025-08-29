@@ -19,7 +19,7 @@ Game::Game() {
     renderTarget = nullptr;
     deltaTimeMs = 16;
     grid = nullptr;
-    lastUpdateTick = SDL_GetTicks();
+    lastUpdateTickMs = SDL_GetTicks();
     windowDimensions = {0, 0};
     scale = 1;
     worldRectCentered = {};
@@ -50,6 +50,8 @@ void Game::init(
 
     windowDimensions = {width, height};
 
+    if (!targetFps) setTargetFps(60);
+
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer) Logger::log("Successfully create renderer");
     else return Logger::err("Failed to create renderer");
@@ -63,13 +65,16 @@ void Game::init(
     initDefaultKeyMap();
 
     isRunning = true;
-    lastUpdateTick = SDL_GetTicks();
+    paused = true;
+    lastUpdateTickMs = SDL_GetTicks();
+    lastRenderTickMs = SDL_GetTicks();
+    fpsCalculated = 0;
+    cumulativeRenderTickMs = SDL_GetTicks();
 }
 
 void Game::handleEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-
         switch (event.type) {
             case SDL_QUIT:
                 isRunning = false;
@@ -95,20 +100,37 @@ void Game::update(uint32_t deltaTimeMs) {
     }
 }
 
-void Game::render() const {
-    if (!isRunning) return;
+void Game::setTargetFps(unsigned short targetFps) {
+    this->targetFps = targetFps;
+    this->targetMsElapsed = 1000 / targetFps;
+}
+
+void Game::render() {
     SDL_RenderClear(renderer);
     // Add stuff to render here
     SDL_SetRenderTarget(renderer, renderTarget);
 
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, 230, 230, 231, 255);
     SDL_RenderFillRect(renderer, &worldRect);
-    if (grid) grid->draw();
+    grid->draw();
 
     SDL_SetRenderTarget(renderer, nullptr);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderCopy(renderer, renderTarget, nullptr, &worldRectCentered);
+
     SDL_RenderPresent(renderer);
+}
+
+void Game::checkRender() {
+    const uint32_t currentTickMs = SDL_GetTicks();
+    const uint32_t passedMs = currentTickMs - lastRenderTickMs;
+    cumulativeRenderTickMs += passedMs;
+    lastRenderTickMs = currentTickMs;
+    if (cumulativeRenderTickMs > targetMsElapsed) {
+        cumulativeRenderTickMs -= targetMsElapsed;
+    } else return;
+    if (!isRunning || paused) return;
+    render();
 }
 
 void Game::startLoop() {
@@ -123,12 +145,12 @@ void Game::startLoop() {
 void Game::checkUpdate() {
     if (!isRunning) return;
     const uint32_t curTick = SDL_GetTicks();
-    const uint32_t deltaTick = curTick - lastUpdateTick;
+    const uint32_t deltaTick = curTick - lastUpdateTickMs;
 
     if (deltaTick >= deltaTimeMs) {
         preUpdate();
 
-        lastUpdateTick = curTick;
+        lastUpdateTickMs = curTick;
         if (paused) return;
 
         update(deltaTick);

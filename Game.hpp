@@ -28,6 +28,10 @@ public:
         );
     void startLoop();
     void setDeltaTime(uint32_t deltaTimeMs);
+    void setTargetFps(unsigned short targetFps);
+
+    void render();
+
     void setGrid(uint8_t width, uint8_t height);
     void handleResize(int width, int height);
     void pause() { paused = true; }
@@ -46,7 +50,7 @@ private:
     void handleEvents();
     void preUpdate();
     void update(uint32_t deltaTimeMs);
-    void render() const;
+    void checkRender();
     void clean() const;
     void checkUpdate();
     void handleWindowEvents(const SDL_Event* event);
@@ -69,7 +73,13 @@ private:
     bool isRunning;
     bool paused;
     uint32_t deltaTimeMs;
-    uint32_t lastUpdateTick;
+    uint32_t lastUpdateTickMs;
+
+    uint32_t lastRenderTickMs;
+    uint32_t cumulativeRenderTickMs;
+    unsigned short fpsCalculated;
+    unsigned short targetFps;
+    unsigned short targetMsElapsed;
 };
 
 #endif //GAME_H
